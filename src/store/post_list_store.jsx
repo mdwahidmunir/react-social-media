@@ -7,7 +7,19 @@ export const PostListContext = createContext({
 });
 
 const postListReducer = (currentPostList, action) => {
-  console.log("In reducer");
+  let newPostList = currentPostList;
+
+  if (action.type === "ADD_POST") {
+    console.log("Post :", action.payload.post);
+    console.log("current Items :", currentPostList);
+    newPostList = [action.payload.post, ...currentPostList];
+  } else if (action.type === "DELETE_POST") {
+    newPostList = currentPostList.filter(
+      (post) => post.id !== action.payload.postId
+    );
+  }
+
+  return newPostList;
 };
 
 const DEFAULT_POST_LIST = [
@@ -35,8 +47,25 @@ const PostListContextProvider = ({ children }) => {
     DEFAULT_POST_LIST
   );
 
-  const addPost = () => {};
-  const deletePost = () => {};
+  const addPost = (post) => {
+    const addPostAction = {
+      type: "ADD_POST",
+      payload: {
+        post: post,
+      },
+    };
+    dispatchPostList(addPostAction);
+  };
+
+  const deletePost = (postId) => {
+    const deletePostAction = {
+      type: "DELETE_POST",
+      payload: {
+        postId: postId,
+      },
+    };
+    dispatchPostList(deletePostAction);
+  };
 
   return (
     <PostListContext.Provider
