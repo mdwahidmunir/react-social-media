@@ -9,3 +9,20 @@
 .sidebar{
     min-height: 800px;
 }
+
+.post-card{
+    margin: 34px 40px;
+}
+
+.post-badge{
+    cursor: pointer;
+    padding: 6px;
+}
+
+.post-tags{
+    margin : 3px;
+}
+
+.reactions{
+    margin : 15px 0 0 0;
+}
