@@ -11,7 +11,8 @@ const CreatePosts = () => {
   const userIdElementRef = useRef();
   const tagsElementRef = useRef();
 
-  const handleOnSubmit = () => {
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
     const post = {
       id: nanoid(),
       title: titleElementRef.current.value,
@@ -32,7 +33,7 @@ const CreatePosts = () => {
   };
 
   return (
-    <form className="create-post" onSubmit={handleOnSubmit}>
+    <form className="create-post" onSubmit={(event) => handleOnSubmit(event)}>
       <div className="mb-3">
         <label htmlFor="title" className="form-label">
           Title
