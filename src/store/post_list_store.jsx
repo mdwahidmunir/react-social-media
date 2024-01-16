@@ -2,6 +2,7 @@ import { createContext, useReducer } from "react";
 
 export const PostListContext = createContext({
   postList: [],
+  addInitialPosts: () => {},
   addPost: () => {},
   deletePost: () => {},
 });
@@ -9,7 +10,9 @@ export const PostListContext = createContext({
 const postListReducer = (currentPostList, action) => {
   let newPostList = currentPostList;
 
-  if (action.type === "ADD_POST") {
+  if (action.type === "ADD_INITIAL_POSTS") {
+    newPostList = action.payload.posts;
+  } else if (action.type === "ADD_POST") {
     console.log("Post :", action.payload.post);
     console.log("current Items :", currentPostList);
     newPostList = [action.payload.post, ...currentPostList];
@@ -23,22 +26,22 @@ const postListReducer = (currentPostList, action) => {
 };
 
 const DEFAULT_POST_LIST = [
-  {
-    id: 1,
-    title: "Dummy post",
-    body: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    reactions: 8,
-    userId: "John",
-    tags: ["vacation", "enjoy", "coding"],
-  },
-  {
-    id: 2,
-    title: "Dummy post 2",
-    body: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
-    reactions: 35,
-    userId: "Doe",
-    tags: ["JS", "React", "Python"],
-  },
+  // {
+  //   id: 1,
+  //   title: "Dummy post",
+  //   body: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+  //   reactions: 8,
+  //   userId: "John",
+  //   tags: ["vacation", "enjoy", "coding"],
+  // },
+  // {
+  //   id: 2,
+  //   title: "Dummy post 2",
+  //   body: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
+  //   reactions: 35,
+  //   userId: "Doe",
+  //   tags: ["JS", "React", "Python"],
+  // },
 ];
 
 const PostListContextProvider = ({ children }) => {
@@ -46,6 +49,16 @@ const PostListContextProvider = ({ children }) => {
     postListReducer,
     DEFAULT_POST_LIST
   );
+
+  const addInitialPosts = (posts) => {
+    const addInitialPostsAction = {
+      type: "ADD_INITIAL_POSTS",
+      payload: {
+        posts: posts,
+      },
+    };
+    dispatchPostList(addInitialPostsAction);
+  };
 
   const addPost = (post) => {
     const addPostAction = {
@@ -69,7 +82,12 @@ const PostListContextProvider = ({ children }) => {
 
   return (
     <PostListContext.Provider
-      value={{ postList: postList, addPost: addPost, deletePost: deletePost }}
+      value={{
+        postList: postList,
+        addInitialPosts: addInitialPosts,
+        addPost: addPost,
+        deletePost: deletePost,
+      }}
     >
       {children}
     </PostListContext.Provider>
