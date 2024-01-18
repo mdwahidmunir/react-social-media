@@ -1,8 +1,8 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useState, useEffect } from "react";
 
 export const PostListContext = createContext({
   postList: [],
-  addInitialPosts: () => {},
+  fetching: false,
   addPost: () => {},
   deletePost: () => {},
 });
@@ -23,24 +23,7 @@ const postListReducer = (currentPostList, action) => {
   return newPostList;
 };
 
-const DEFAULT_POST_LIST = [
-  // {
-  //   id: 1,
-  //   title: "Dummy post",
-  //   body: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-  //   reactions: 8,
-  //   userId: "John",
-  //   tags: ["vacation", "enjoy", "coding"],
-  // },
-  // {
-  //   id: 2,
-  //   title: "Dummy post 2",
-  //   body: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
-  //   reactions: 35,
-  //   userId: "Doe",
-  //   tags: ["JS", "React", "Python"],
-  // },
-];
+const DEFAULT_POST_LIST = [];
 
 const PostListContextProvider = ({ children }) => {
   const [postList, dispatchPostList] = useReducer(
@@ -78,11 +61,32 @@ const PostListContextProvider = ({ children }) => {
     dispatchPostList(deletePostAction);
   };
 
+  const [fetching, setFetching] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    setFetching(true);
+
+    fetch("https://dummyjson.com/posts", { signal })
+      .then((res) => res.json())
+      .then((data) => {
+        addInitialPosts(data.posts);
+        setFetching(false);
+      });
+
+    // Clean up funtion
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
   return (
     <PostListContext.Provider
       value={{
         postList: postList,
-        addInitialPosts: addInitialPosts,
+        fetching: fetching,
         addPost: addPost,
         deletePost: deletePost,
       }}
