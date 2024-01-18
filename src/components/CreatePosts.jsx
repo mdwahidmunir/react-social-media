@@ -14,7 +14,7 @@ const CreatePosts = () => {
   const handleOnSubmit = (event) => {
     event.preventDefault();
     const post = {
-      id: nanoid(),
+      // id: nanoid(),
       title: titleElementRef.current.value,
       body: bodyElementRef.current.value,
       reactions: reactionsElementRef.current.value,
@@ -23,7 +23,14 @@ const CreatePosts = () => {
         .split(" ")
         .filter((tag) => tag.trim() !== ""),
     };
-    addPost(post);
+
+    fetch("https://dummyjson.com/posts/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(post),
+    })
+      .then((res) => res.json())
+      .then((post) => addPost(post));
 
     titleElementRef.current.value = "";
     bodyElementRef.current.value = "";
