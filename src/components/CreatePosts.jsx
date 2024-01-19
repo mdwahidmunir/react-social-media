@@ -1,9 +1,11 @@
 import { useRef, useContext } from "react";
 import { nanoid } from "nanoid";
 import { PostListContext } from "../store/post_list_store";
+import { useNavigate } from "react-router-dom";
 
 const CreatePosts = () => {
   const { addPost } = useContext(PostListContext);
+  const navigate = useNavigate();
 
   const titleElementRef = useRef();
   const bodyElementRef = useRef();
@@ -30,7 +32,10 @@ const CreatePosts = () => {
       body: JSON.stringify(post),
     })
       .then((res) => res.json())
-      .then((post) => addPost(post));
+      .then((post) => {
+        addPost(post);
+        navigate("/");
+      });
 
     titleElementRef.current.value = "";
     bodyElementRef.current.value = "";
