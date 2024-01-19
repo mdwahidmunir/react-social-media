@@ -11,7 +11,9 @@ const PostList = () => {
     <>
       {fetching && <Spinner />}
       {!fetching && postList.length === 0 && <WelcomeMessage />}
-      {!fetching && postList.map((post) => <Post key={post.id} post={post} />)}
+      {!fetching &&
+        postList.length !== 0 &&
+        postList.map((post) => <Post key={post.id} post={post} />)}
     </>
   );
 };
